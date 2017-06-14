@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd 
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://cxf.apache.org/jaxws
+        http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<context:property-placeholder location="classpath:dbConfig.properties" />
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${driverClass}" />
+		<property name="jdbcUrl" value="${jdbcUrl}" />
+		<property name="user" value="${user}" />
+		<property name="password" value="${password}" />
+	</bean>
+
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.mrz.mapper" />
+	</bean>
+
+
+	<bean id="myCallbackServer" class="com.mrz.util.MyCallbackServer"></bean>
+
+	<bean id="in" class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+		<constructor-arg>
+			<map>
+				<entry key="action" value="UsernameToken" />
+				<entry key="passwordType" value="PasswordText" />
+				<entry key="passwordCallbackRef">
+					<ref bean="myCallbackServer" />
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="userServiceImpl" class="com.mrz.service.impl.UserServiceImpl"></bean>
+
+	<jaxws:endpoint address="/userService"
+		implementorClass="com.mrz.service.UserService">
+<!-- 		<jaxws:inInterceptors>
+			<ref bean="in" />
+		</jaxws:inInterceptors> -->
+		<jaxws:implementor ref="userServiceImpl" />
+	</jaxws:endpoint>
+
+	<bean id="addressServiceImpl" class="com.mrz.service.impl.AddressServiceImpl"></bean>
+
+	<jaxws:endpoint address="/addressService"
+		implementorClass="com.mrz.service.AddressService">
+		<jaxws:implementor ref="addressServiceImpl" />
+	</jaxws:endpoint>
+
+	<bean id="testServiceImpl" class="com.mrz.service.impl.TestServiceImpl"></bean>
+	<jaxws:endpoint address="/testService"
+		implementorClass="com.mrz.service.TestService">
+		<jaxws:inInterceptors>
+			<ref bean="in" />
+		</jaxws:inInterceptors>
+		<jaxws:implementor>
+			<ref bean="testServiceImpl" />
+		</jaxws:implementor>
+	</jaxws:endpoint>
+
+</beans>

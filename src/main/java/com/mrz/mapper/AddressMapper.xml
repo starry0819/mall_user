@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mrz.mapper.AddressMapper">
+	<select id="queryAddressesByUser" parameterType="com.mrz.bean.T_mall_user"
+		resultType="com.mrz.bean.T_mall_address">
+		select * from t_mall_address
+		where yh_id = #{id}
+	</select>
+	
+	<select id="queryAddressByid" parameterType="int" resultType="com.mrz.bean.T_mall_address">
+		select * from t_mall_address
+		where id = #{id}
+	</select>
+
+</mapper>
