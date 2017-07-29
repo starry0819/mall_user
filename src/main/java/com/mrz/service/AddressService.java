@@ -12,5 +12,6 @@ public interface AddressService {
 
 	public List<T_mall_address> getAddressesByUser(T_mall_user user);
 	
+	public  void test(int id);
 	public T_mall_address getAddressByid(int id);
 }
