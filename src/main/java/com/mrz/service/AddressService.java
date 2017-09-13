@@ -14,5 +14,5 @@ public interface AddressService {
 	public  void test(int id);
 
 	public void testNew(int cloud);
-	public T_mall_address getAddressByid(int id);
+	public T_mall_address getAddressByid(String id);
 }
